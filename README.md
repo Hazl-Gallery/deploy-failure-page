@@ -129,9 +129,21 @@ docker logs [CONTAINER_ID]   # View container logs
 
 ## Build and Push to Docker Hub (Optional)
 
+### Single Platform Build
 ```bash
 docker build -t hazelgallery/deploy-failure-page .
 docker push hazelgallery/deploy-failure-page
+```
+
+### Multi-Platform Build (Recommended)
+For compatibility with both ARM64 (Apple Silicon Mac) and AMD64 (Intel/Linux servers):
+
+```bash
+# Create and use multi-platform builder
+docker buildx create --name multiplatform --use
+
+# Build and push for both architectures
+docker buildx build --platform linux/amd64,linux/arm64 -t hazelgallery/deploy-failure-page:latest --push .
 ```
 
 ## Troubleshooting
@@ -139,6 +151,23 @@ docker push hazelgallery/deploy-failure-page
 ### Container Won't Start
 - Check if port 8080 is already in use: `lsof -i :8080`
 - Use a different port: `docker run -d -p 3000:80 ...`
+
+### Platform Architecture Conflicts
+If you see warnings like "The requested image's platform (linux/arm64/v8) does not match the detected host platform (linux/amd64/v3)":
+
+**Solution**: The image now supports both ARM64 and AMD64 architectures. Pull the latest version:
+```bash
+docker pull hazelgallery/deploy-failure-page:latest
+```
+
+**For manual platform specification**:
+```bash
+# Force AMD64 (Intel/Linux servers)
+docker run --platform linux/amd64 -d -p 8080:80 -e PORT=8080 -e FAILURE_TEXT="..." hazelgallery/deploy-failure-page
+
+# Force ARM64 (Apple Silicon Mac)
+docker run --platform linux/arm64 -d -p 8080:80 -e PORT=8080 -e FAILURE_TEXT="..." hazelgallery/deploy-failure-page
+```
 
 ### Markdown Not Rendering
 - Ensure you're using the local image: `deploy-failure-page` (not `hazelgallery/deploy-failure-page`)
