@@ -150,7 +150,6 @@
 <body>
     <div class="container">
         <h1>
-            <span class="emoji">❌</span>
             Deployment Failed
         </h1>
         
@@ -169,12 +168,12 @@
             <ul>
                 <li>Terminate the app and deploy again. Our AI agents learn from each failure</li>
                 <li>However if the failure persists, please use the VM terminal to manually troubleshoot</li>
-                <li>Port ${PORT} is reserved for this app so please manually deploy the app to this port</li>
+                <li>To remove this page from the port, kill the existing docker container with <code>docker kill $(docker ps -q --filter "publish=${PORT}")</code></li>
             </ul>
         </div>
         
         <div class="footer">
-            <strong>Need help? Contact support <span class="emoji">📞</span></strong>
+            <strong>Need help? Contact support at <a href="mailto:services@hazl.ca">services@hazl.ca</a> <span class="emoji">📧</span></strong>
         </div>
     </div>
 
